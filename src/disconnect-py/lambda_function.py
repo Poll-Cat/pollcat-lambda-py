@@ -31,3 +31,4 @@ def lambda_handler(event, context):
     # Construct response
     response = {'statusCode': 200}
     return response
+    
