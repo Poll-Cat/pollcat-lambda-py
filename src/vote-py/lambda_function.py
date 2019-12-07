@@ -9,6 +9,7 @@ logging.basicConfig(format='%(levelname)s: %(asctime)s: %(message)s')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def lambda_handler(vote, context):
     
     # Retrieve the name of the DynamoDB table to store connection IDs
