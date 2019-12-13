@@ -9,8 +9,9 @@ logging.basicConfig(format='%(levelname)s: %(asctime)s: %(message)s')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+def lambda_handler(req, context):
 
-def lambda_handler(vote, context):
+    vote = json.loads(req['body'])
     
     # Retrieve the name of the DynamoDB table to store connection IDs
     poll_table_name = os.environ['PollTableName']
