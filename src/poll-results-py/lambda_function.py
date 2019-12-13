@@ -9,10 +9,10 @@ logging.basicConfig(format='%(levelname)s: %(asctime)s: %(message)s')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+def lambda_handler(req, context):
 
-def lambda_handler(request, context):
-    logger.info(request)
-    pollid = request['pollid']
+    queryString = req['pathParameters']
+    pollid = queryString['pollid']
     
     # Retrieve the name of the DynamoDB table to store connection IDs
     poll_table_name = os.environ['PollTableName']
@@ -23,9 +23,9 @@ def lambda_handler(request, context):
     response = dynamodb_client.get_item(TableName=poll_table_name,
                                         Key=key)
   
-    poll = json.loads(response['Item']['data']['S'])
+    poll = json.dumps(response['Item']['data']['S'])
 
     # Construct response
-    response = {'statusCode': 200, 'data': poll}
+    response = {'statusCode': 200, 'body': poll}
     return response
     
