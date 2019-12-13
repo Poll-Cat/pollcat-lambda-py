@@ -10,8 +10,9 @@ logging.basicConfig(format='%(levelname)s: %(asctime)s: %(message)s')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+def lambda_handler(req, context):
 
-def lambda_handler(poll, context):
+    poll = json.loads(req['body'])
     
     # Retrieve the name of the DynamoDB table to store connection IDs
     poll_table_name = os.environ['PollTableName']
@@ -20,8 +21,7 @@ def lambda_handler(poll, context):
     pollid = str(uuid.uuid4())
     
     poll['pollid'] = pollid
-    logger.info('poll:')
-    logger.info(poll)
+
     # Save the Poll to DynamoDB
     dynamodb_client = boto3.client('dynamodb')
         
