@@ -3,6 +3,7 @@ import logging
 import os
 import boto3
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key, Attr
 
 # Set up logging
 logging.basicConfig(format='%(levelname)s: %(asctime)s: %(message)s')
@@ -18,11 +19,14 @@ def lambda_handler(req, context):
     
     # Get the Poll from DynamoDB
     dynamodb_client = boto3.client('dynamodb')
+    dynamodb_resouce = boto3.resource('dynamodb')
+    
     key = {'pollid': {'S': vote['pollid']}}
     response = dynamodb_client.get_item(TableName=poll_table_name,
                                         Key=key)
   
     poll = json.loads(response['Item']['data']['S'])
+    pollid = poll['pollid']
     
     # Update the VoteCount for the selected option(s)
     for choice in vote['options']:
@@ -44,11 +48,11 @@ def lambda_handler(req, context):
 
     # Retrieve the name of the DynamoDB table to store connection IDs
     connection_table_name = os.environ['ConnectionTableName']
-
+    connection_table = dynamodb_resouce.Table(connection_table_name)
+    
     # Retrieve all connection IDs from the table
     try:
-        response = dynamodb_client.scan(TableName=connection_table_name,
-                                        ProjectionExpression='connectionid')
+        response = connection_table.scan(FilterExpression=Key('pollid').eq(pollid))
     except ClientError as e:
         logger.error(e)
         raise ValueError(e)
@@ -56,8 +60,8 @@ def lambda_handler(req, context):
     connectionsData = response['Items']
         
     while 'LastEvaluatedKey' in response:
-        response = dynamodb_client.scan(TableName=connection_table_name,
-                                        ExclusiveStartKey=response['LastEvaluatedKey'])
+        response = connection_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'],
+                                        ilterExpression=Key('pollid').eq(pollid))
         connectionsData.extend(response['Items'])
 
     # Construct the message text as bytes
@@ -73,7 +77,7 @@ def lambda_handler(req, context):
     )
 
     for item in connectionsData:
-        connectionId = item['connectionid']['S']
+        connectionId = item['connectionid']
         try:
             apiResponse = api_client.post_to_connection(Data=message,
                                           ConnectionId=connectionId)
@@ -84,4 +88,3 @@ def lambda_handler(req, context):
     # Construct response
     response = {'statusCode': 200}
     return response
-    
