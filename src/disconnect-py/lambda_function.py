@@ -18,11 +18,11 @@ def lambda_handler(event, context):
 
     # Retrieve the name of the DynamoDB table to store connection IDs
     table_name = os.environ['ConnectionTableName']
-
+    
     # Remove the connection ID from the table
-    item = {'connectionId': {'S': event['requestContext']['connectionId']}}
+    item = {'connectionid': {'S': event['requestContext']['connectionId']}}
     dynamodb_client = boto3.client('dynamodb')
-                
+    
     try:
         dynamodb_client.delete_item(TableName=table_name, Key=item)
     except ClientError as e:
@@ -32,4 +32,3 @@ def lambda_handler(event, context):
     # Construct response
     response = {'statusCode': 200}
     return response
-    
