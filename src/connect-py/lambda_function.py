@@ -19,7 +19,7 @@ def lambda_handler(event, context):
     # Retrieve the name of the DynamoDB table to store connection IDs
     table_name = os.environ['ConnectionTableName']
 
-    # Was a user name specified in a query parameter?
+    # Was a pollid specified in a query parameter?
     pollid = ''
     if 'queryStringParameters' in event:
         if 'pollid' in event['queryStringParameters']:
@@ -29,7 +29,7 @@ def lambda_handler(event, context):
     item = {'connectionid': {'S': event['requestContext']['connectionId']},
             'pollid': {'S': pollid}}
     dynamodb_client = boto3.client('dynamodb')
-                
+    
     try:
         dynamodb_client.put_item(TableName=table_name, Item=item)
     except ClientError as e:
@@ -39,4 +39,3 @@ def lambda_handler(event, context):
     # Construct response
     response = {'statusCode': 200}
     return response
-    
