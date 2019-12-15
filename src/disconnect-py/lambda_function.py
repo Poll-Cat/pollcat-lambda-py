@@ -22,6 +22,7 @@ def lambda_handler(event, context):
     # Remove the connection ID from the table
     item = {'connectionId': {'S': event['requestContext']['connectionId']}}
     dynamodb_client = boto3.client('dynamodb')
+                
     try:
         dynamodb_client.delete_item(TableName=table_name, Key=item)
     except ClientError as e:
