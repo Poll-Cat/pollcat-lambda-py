@@ -52,7 +52,7 @@ def lambda_handler(req, context):
     
     # Retrieve all connection IDs from the table
     try:
-        response = connection_table.scan(FilterExpression=Key('pollid').eq(pollid))
+        response = connection_table.scan(FilterExpression=Attr('pollid').eq(pollid))
     except ClientError as e:
         logger.error(e)
         raise ValueError(e)
@@ -61,7 +61,7 @@ def lambda_handler(req, context):
         
     while 'LastEvaluatedKey' in response:
         response = connection_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'],
-                                        ilterExpression=Key('pollid').eq(pollid))
+                                        FilterExpression=Attr('pollid').eq(pollid))
         connectionsData.extend(response['Items'])
 
     # Construct the message text as bytes
