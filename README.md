@@ -1,3 +1,3 @@
-# Lambda functions for The Last Straw Poll (Python Edition)
+# Lambda functions for PollCat (Python Edition)
 
 Build and deploy are still a work in progress
