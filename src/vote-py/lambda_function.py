@@ -73,7 +73,7 @@ def lambda_handler(req, context):
     
     api_client = session.client(
         service_name='apigatewaymanagementapi',
-        endpoint_url='https://4jhdjfts22.execute-api.us-east-2.amazonaws.com/alpha/'
+        endpoint_url=os.environ['WebSocketAPIUrl']
     )
 
     for item in connectionsData:
