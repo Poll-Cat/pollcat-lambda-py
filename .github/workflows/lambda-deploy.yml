@@ -2,7 +2,7 @@ name: Lambda Deploy
 on:
   push:
     branches:
-      - lambda-deploy
+      - master
 jobs:
   deploy:
     name: Deploy
