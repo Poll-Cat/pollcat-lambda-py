@@ -1,0 +1,52 @@
+name: Lambda Deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Zip (connect-py)
+        run: cd ./src/connect-py && zip connect-py.zip lambda_function.py
+      - name: Deploy Lambda (connect-py)
+        run: aws lambda update-function-code 
+          --function-name connect 
+          --zip-file fileb://src/connect-py/connect-py.zip
+
+      - name: Zip (disconnect-py)
+        run: cd ./src/disconnect-py && zip disconnect-py.zip lambda_function.py
+      - name: Deploy Lambda (disconnect-py)
+        run: aws lambda update-function-code 
+          --function-name disconnect 
+          --zip-file fileb://src/disconnect-py/disconnect-py.zip
+
+      - name: Zip (poll-py)
+        run: cd ./src/poll-py && zip poll-py.zip lambda_function.py
+      - name: Deploy Lambda (poll-py)
+        run: aws lambda update-function-code 
+          --function-name poll 
+          --zip-file fileb://src/poll-py/poll-py.zip
+
+      - name: Zip (poll-results-py)
+        run: cd ./src/poll-results-py && zip poll-results-py.zip lambda_function.py
+      - name: Deploy Lambda (poll-results-py)
+        run: aws lambda update-function-code 
+          --function-name poll-results 
+          --zip-file fileb://src/poll-results-py/poll-results-py.zip
+
+      - name: Zip (vote-py)
+        run: cd ./src/vote-py && zip vote-py.zip lambda_function.py
+      - name: Deploy Lambda (vote-py)
+        run: aws lambda update-function-code 
+          --function-name vote
+          --zip-file fileb://src/vote-py/vote-py.zip
