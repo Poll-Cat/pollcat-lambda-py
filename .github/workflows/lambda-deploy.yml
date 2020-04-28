@@ -20,4 +20,4 @@ jobs:
       - name: Deploy Lambda (connect-py)
         run: aws lambda update-function-code 
           --function-name connect 
-          --zip-file fileb://connect-py.zip
+          --zip-file fileb://src/connect-py/connect-py.zip
