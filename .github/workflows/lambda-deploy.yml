@@ -16,7 +16,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Zip (connect-py)
-        run: zip -r connect-py.zip ./src/connect-py
+        run: cd ./src/connect-py && zip connect-py.zip lambda_function.py
       - name: Deploy Lambda (connect-py)
         run: aws lambda update-function-code 
           --function-name connect 
