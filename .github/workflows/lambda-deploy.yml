@@ -31,7 +31,7 @@ jobs:
           --zip-file fileb://src/disconnect-py/disconnect-py.zip
 
       - name: Zip (poll-py)
-        run: cd ./src && zip poll-py.zip poll-py
+        run: cd ./src && zip -r poll-py.zip poll-py
       - name: Deploy Lambda (poll-py)
         run: aws lambda update-function-code 
           --function-name poll 
