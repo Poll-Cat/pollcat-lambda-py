@@ -3,6 +3,7 @@ import logging
 import os
 import boto3
 import uuid
+from xkcdpass import xkcd_password as xp
 from botocore.exceptions import ClientError
 
 # Set up logging
@@ -19,6 +20,13 @@ def lambda_handler(req, context):
     
     # Create a new GUID for the pollid
     pollid = str(uuid.uuid4())
+
+    # create a wordlist from the default wordfile
+    # use words between 5 and 8 letters long
+    wordfile = xp.locate_wordfile()
+    mywords = xp.generate_wordlist(wordfile=wordfile, min_length=5, max_length=8)
+    pollid = xp.generate_xkcdpassword(mywords, numwords = 5, delimiter="-")
+    logger.info(pollid)
     
     poll['pollid'] = pollid
 
