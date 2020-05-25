@@ -19,8 +19,7 @@ def lambda_handler(req, context):
     poll_table_name = os.environ['PollTableName']
     
     # Create a new GUID for the pollid
-    pollid = str(uuid.uuid4())
-
+    # pollid = str(uuid.uuid4())
     # create a wordlist from the default wordfile
     # use words between 5 and 8 letters long
     wordfile = xp.locate_wordfile()
